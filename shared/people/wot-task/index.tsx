@@ -16,36 +16,40 @@ type Props = {
   onDismiss: (voucher: string, vouchee: string) => void
 }
 
-function makeButtons(props: Props) {
-  let handleButton = {} as TaskButton
+const makeButtons = (props: Props): Array<TaskButton> => {
+  const dismissButton = {
+    label: 'Dismiss',
+    mode: 'Secondary',
+    onClick: () => props.onDismiss(props.voucher, props.vouchee),
+  } as TaskButton
   switch (props.wotStatus) {
     case WotStatusType.proposed:
-      handleButton = {
-        label: 'Review claim',
-        onClick: () => props.onClickUser(props.vouchee),
-      }
-      break
+      return [
+        {
+          label: 'Review claim',
+          onClick: () => props.onClickUser(props.vouchee),
+        },
+        dismissButton,
+      ]
     case WotStatusType.accepted:
-      handleButton = {
-        label: 'View claim',
-        onClick: () => props.onClickUser(props.vouchee),
-      }
-      break
+      return [
+        {
+          label: 'Review claim',
+          onClick: () => props.onClickUser(props.vouchee),
+        },
+        dismissButton,
+      ]
     case WotStatusType.rejected:
-      handleButton = {
-        label: 'Edit claim',
-        onClick: () => props.onClickUser(props.vouchee),
-      }
-      break
+      return [
+        {
+          label: 'Edit claim',
+          onClick: () => props.onClickUser(props.vouchee),
+        },
+        dismissButton,
+      ]
+    default:
+      return []
   }
-  return [
-    handleButton,
-    {
-      label: 'Dismiss',
-      mode: 'Secondary',
-      onClick: () => props.onDismiss(props.voucher, props.vouchee),
-    },
-  ] as Array<TaskButton>
 }
 
 const makeMessage = (props: Props) => {
