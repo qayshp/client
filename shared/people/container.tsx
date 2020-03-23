@@ -1,4 +1,3 @@
-import People, {Header} from '.'
 import * as Constants from '../constants/people'
 import * as Container from '../util/container'
 import * as Kb from '../common-adapters'
@@ -8,6 +7,7 @@ import * as RouteTreeGen from '../actions/route-tree-gen'
 import * as Types from '../constants/types/people'
 import * as WaitingConstants from '../constants/waiting'
 import {createShowUserProfile} from '../actions/profile-gen'
+import People, {Header} from '.'
 
 type OwnProps = {}
 

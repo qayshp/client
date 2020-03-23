@@ -1,8 +1,3 @@
-import Announcement from './announcement/container'
-import FollowNotification from './follow-notification'
-import FollowSuggestions from './follow-suggestions'
-import Todo from './todo/container'
-import WotTask from './wot-task/container'
 import * as Container from '../util/container'
 import * as Kb from '../common-adapters'
 import * as React from 'react'
@@ -10,8 +5,13 @@ import * as PeopleGen from '../actions/people-gen'
 import * as SignupGen from '../actions/signup-gen'
 import * as Styles from '../styles'
 import * as Types from '../constants/types/people'
+import Announcement from './announcement/container'
+import FollowNotification from './follow-notification'
+import FollowSuggestions from './follow-suggestions'
 import {noEmail} from '../constants/signup'
 import {Props} from '.'
+import Todo from './todo/container'
+import WotTask from './wot-task/container'
 
 export const itemToComponent: (item: Types.PeopleScreenItem, props: Props) => React.ReactNode = (
   item,

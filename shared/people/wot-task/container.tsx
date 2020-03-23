@@ -1,7 +1,7 @@
-import WotTask from '.'
 import * as PeopleGen from '../../actions/people-gen'
 import * as RPCTypes from '../../constants/types/rpc-gen'
 import * as Container from '../../util/container'
+import WotTask from '.'
 
 type OwnProps = {
   key: string

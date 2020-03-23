@@ -1,5 +1,3 @@
-import commonTeamBuildingSaga, {filterForNs} from './team-building'
-import logger from '../logger'
 import * as Constants from '../constants/people'
 import * as Container from '../util/container'
 import * as EngineGen from './engine-gen-gen'
@@ -12,6 +10,8 @@ import * as Saga from '../util/saga'
 import * as Tabs from '../constants/tabs'
 import * as TeamBuildingGen from './team-building-gen'
 import * as Types from '../constants/types/people'
+import commonTeamBuildingSaga, {filterForNs} from './team-building'
+import logger from '../logger'
 import {RPCError} from '../util/errors'
 
 // set this to true to have all todo items + a contact joined notification show up all the time
