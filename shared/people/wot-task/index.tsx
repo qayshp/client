@@ -90,9 +90,8 @@ const makeMessage = (props: Props) => {
 }
 
 const WotTask = (props: Props) => {
-  const onClickBox = () => props.onClickUser(props.vouchee)
   return (
-    <Kb.ClickableBox onClick={onClickBox}>
+    <Kb.ClickableBox onClick={() => props.onClickUser(props.vouchee)}>
       <PeopleItem
         badged={props.badged}
         icon={
