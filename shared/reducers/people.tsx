@@ -16,7 +16,7 @@ const initialState: Types.State = {
   resentEmail: '',
   teamBuilding: TeamBuildingConstants.makeSubState(),
   version: -1,
-  wotUpdates: [],
+  wotUpdates: new Map(),
 }
 
 type Actions = PeopleGen.Actions | TeamBuildingGen.Actions | SettingsGen.EmailVerifiedPayload
@@ -41,9 +41,7 @@ export default Container.makeReducer<Actions, Types.State>(initialState, {
     draftState.version = version
   },
   [PeopleGen.badgeAppForWotNotifications]: (draftState, action) => {
-    if (!shallowEqual(action.payload.updates, draftState.wotUpdates)) {
-      draftState.wotUpdates = action.payload.updates
-    }
+    draftState.wotUpdates = action.payload.updates
   },
   [PeopleGen.setResentEmail]: (draftState, action) => {
     draftState.resentEmail = action.payload.email

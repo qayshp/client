@@ -4,7 +4,7 @@ import * as Types from '../constants/types/people'
 export type Props = {
   oldItems: Array<Types.PeopleScreenItem>
   newItems: Array<Types.PeopleScreenItem>
-  wotUpdates: Array<Types.WotUpdate>
+  wotUpdates: Map<string, Types.WotUpdate>
   followSuggestions: Array<Types.FollowSuggestion>
   getData: (markViewed?: boolean) => void
   onClickUser: (username: string) => void

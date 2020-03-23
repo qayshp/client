@@ -20,7 +20,7 @@
       "vouchee": "string"
     },
     "badgeAppForWotNotifications": {
-      "updates": "Array<Types.WotUpdate>"
+      "updates": "Map<string, Types.WotUpdate>"
     },
     "markViewed": {},
     "skipTodo": {

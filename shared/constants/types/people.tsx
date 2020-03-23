@@ -77,7 +77,7 @@ export type State = {
   readonly version: number
   readonly newItems: Array<PeopleScreenItem>
   readonly oldItems: Array<PeopleScreenItem>
-  readonly wotUpdates: Array<WotUpdate>
+  readonly wotUpdates: Map<string, WotUpdate>
   readonly followSuggestions: Array<FollowSuggestion>
   readonly resentEmail: string
   readonly teamBuilding: TeamBuildingTypes.TeamBuildingSubState

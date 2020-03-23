@@ -15,7 +15,7 @@ export const setResentEmail = 'people:setResentEmail'
 export const skipTodo = 'people:skipTodo'
 
 // Payload Types
-type _BadgeAppForWotNotificationsPayload = {readonly updates: Array<Types.WotUpdate>}
+type _BadgeAppForWotNotificationsPayload = {readonly updates: Map<string, Types.WotUpdate>}
 type _DismissAnnouncementPayload = {readonly id: RPCTypes.HomeScreenAnnouncementID}
 type _DismissWotNotificationsPayload = {readonly voucher: string; readonly vouchee: string}
 type _GetPeopleDataPayload = {readonly markViewed: boolean; readonly numFollowSuggestionsWanted: number}

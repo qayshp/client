@@ -114,7 +114,7 @@ export const PeoplePageList = (props: Props) => (
     {props.newItems
       .filter(item => item.type !== 'todo' || item.todoType !== 'verifyAllEmail' || !props.signupEmail)
       .map(item => itemToComponent(item, props))}
-    {props.wotUpdates.map(item => (
+    {Object.values(props.wotUpdates).map(item => (
       <WotTask
         voucher={item.voucher}
         vouchee={item.vouchee}
