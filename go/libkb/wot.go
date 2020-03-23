@@ -164,7 +164,7 @@ func transformUserVouch(mctx MetaContext, serverVouch serverWotVouch, voucheeUse
 	case wotVouchLink.revoked:
 		status = keybase1.WotStatusType_REVOKED
 	case wotReactLink != nil && wotReactLink.revoked:
-		status = keybase1.WotStatusType_REVOKED
+		status = keybase1.WotStatusType_PROPOSED
 	case !hasReaction:
 		status = keybase1.WotStatusType_PROPOSED
 	case reactionStatus == keybase1.WotReactionType_ACCEPT:
