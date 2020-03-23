@@ -5,33 +5,25 @@ import {WotStatusType} from '../../constants/types/rpc-gen'
 import WotTask from '.'
 
 const baseProps = {
-  badged: true,
   key: '{voucher:alice,vouchee:bob}',
   onClickUser: action('onClickUser'),
-  onDismiss: action('onDismiss'),
   vouchee: 'bob',
   voucher: 'alice',
 }
 
 const propsProposed = {
   ...baseProps,
-  otherUser: 'alice',
-  userForIcon: 'alice',
-  wotStatus: WotStatusType.proposed,
+  status: WotStatusType.proposed,
 }
 
 const propsAccepted = {
   ...baseProps,
-  otherUser: 'bob',
-  userForIcon: 'bob',
-  wotStatus: WotStatusType.accepted,
+  status: WotStatusType.accepted,
 }
 
 const propsRejected = {
   ...baseProps,
-  otherUser: 'bob',
-  userForIcon: 'bob',
-  wotStatus: WotStatusType.rejected,
+  status: WotStatusType.rejected,
 }
 
 const load = () => {

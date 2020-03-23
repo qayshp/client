@@ -11,7 +11,7 @@ import FollowSuggestions from './follow-suggestions'
 import {noEmail} from '../constants/signup'
 import {Props} from '.'
 import Todo from './todo/container'
-import WotTask from './wot-task/container'
+import WotTask from './wot-task'
 
 export const itemToComponent: (item: Types.PeopleScreenItem, props: Props) => React.ReactNode = (
   item,

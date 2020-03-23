@@ -1,28 +1,30 @@
-import * as Kb from '../../common-adapters'
 import * as React from 'react'
+import * as Container from '../../util/container'
+import * as Kb from '../../common-adapters'
+import * as PeopleGen from '../../actions/people-gen'
+import * as RPCTypes from '../../constants/types/rpc-gen'
 import * as Styles from '../../styles'
 import PeopleItem, {TaskButton} from '../item'
 import {WotStatusType} from '../../constants/types/rpc-gen'
 
 type Props = {
-  userForIcon: string
-  otherUser: string
-  voucher: string
   key: string
-  vouchee: string
-  wotStatus: WotStatusType
-  badged: boolean
   onClickUser: (username: string) => void
-  onDismiss: (voucher: string, vouchee: string) => void
+  status: RPCTypes.WotStatusType
+  vouchee: string
+  voucher: string
 }
 
-const makeButtons = (props: Props): Array<TaskButton> => {
+const makeButtons = (
+  props: Props,
+  onDismiss: (voucher: string, vouchee: string) => void
+): Array<TaskButton> => {
   const dismissButton = {
     label: 'Dismiss',
     mode: 'Secondary',
-    onClick: () => props.onDismiss(props.voucher, props.vouchee),
+    onClick: () => onDismiss(props.voucher, props.vouchee),
   } as TaskButton
-  switch (props.wotStatus) {
+  switch (props.status) {
     case WotStatusType.proposed:
       return [
         {
@@ -77,7 +79,7 @@ const makeMessage = (props: Props) => {
       onUsernameClicked={props.onClickUser}
     />
   )
-  switch (props.wotStatus) {
+  switch (props.status) {
     case WotStatusType.proposed:
       return <Kb.Text type="Body">{voucherComponent} submitted an entry to your web of trust.</Kb.Text>
     case WotStatusType.accepted:
@@ -89,24 +91,32 @@ const makeMessage = (props: Props) => {
   }
 }
 
-const WotTask = (props: Props) => {
+const WotTask = React.memo((props: Props) => {
+  const dispatch = Container.useDispatch()
+  const myUsername = Container.useSelector(state => state.config.username)
+  const otherUser = myUsername.localeCompare(props.voucher) === 0 ? props.vouchee : props.voucher
+  const badged = true
+  const onDismiss = (voucher: string, vouchee: string) => {
+    dispatch(PeopleGen.createDismissWotNotifications({vouchee, voucher}))
+  }
+
   return (
     <Kb.ClickableBox onClick={() => props.onClickUser(props.vouchee)}>
       <PeopleItem
-        badged={props.badged}
+        badged={badged}
         icon={
           <Kb.Avatar
-            username={props.otherUser}
-            onClick={() => props.onClickUser(props.otherUser)}
+            username={otherUser}
+            onClick={() => props.onClickUser(otherUser)}
             size={Styles.isMobile ? 48 : 32}
           />
         }
-        buttons={makeButtons(props)}
+        buttons={makeButtons(props, onDismiss)}
       >
         {makeMessage(props)}
       </PeopleItem>
     </Kb.ClickableBox>
   )
-}
+})
 
 export default WotTask
