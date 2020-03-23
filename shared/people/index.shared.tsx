@@ -61,18 +61,6 @@ export const itemToComponent: (item: Types.PeopleScreenItem, props: Props) => Re
   return null
 }
 
-export const itemToWotComponent: (item: Types.WotUpdate, props: Props) => React.ReactNode = (item, props) => {
-  return (
-    <WotTask
-      voucher={item.voucher}
-      vouchee={item.vouchee}
-      status={item.status}
-      key={JSON.stringify(item)}
-      onClickUser={props.onClickUser}
-    />
-  )
-}
-
 const EmailVerificationBanner = () => {
   const dispatch = Container.useDispatch()
   React.useEffect(
@@ -126,7 +114,15 @@ export const PeoplePageList = (props: Props) => (
     {props.newItems
       .filter(item => item.type !== 'todo' || item.todoType !== 'verifyAllEmail' || !props.signupEmail)
       .map(item => itemToComponent(item, props))}
-    {props.wotUpdates.map(item => itemToWotComponent(item, props))}
+    {props.wotUpdates.map(item => (
+      <WotTask
+        voucher={item.voucher}
+        vouchee={item.vouchee}
+        status={item.status}
+        key={JSON.stringify(item)}
+        onClickUser={props.onClickUser}
+      />
+    ))}
     <FollowSuggestions suggestions={props.followSuggestions} />
     {props.oldItems.map(item => itemToComponent(item, props))}
   </Kb.Box>
