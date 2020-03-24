@@ -166,12 +166,12 @@ class EmojiPicker extends React.Component<Props, State> {
     // when the width changes to do that processing as infrequently as possible
     if (this.props.waitingForEmoji) {
       return (
-        <Box2
+        <Kb.Box2
           direction="horizontal"
           style={Styles.collapseStyles([styles.alignItemsCenter, styles.flexWrap])}
         >
-          <ProgressIndicator />
-        </Box2>
+          <Kb.ProgressIndicator />
+        </Kb.Box2>
       )
     }
     if (this.props.filter) {
@@ -267,9 +267,9 @@ const EmojiRender = ({
   return (
     <Kb.ClickableBox onClick={() => onChoose(emojiStr)} style={styles.emoji} key={emoji.short_name}>
       {emoji.source ? (
-        <CustomEmoji size="Medium" src={emoji.source} alias={emoji.short_name} />
+        <Kb.CustomEmoji size="Medium" src={emoji.source} alias={emoji.short_name} />
       ) : (
-        <Emoji size={isAndroid ? singleEmojiWidth - 5 : singleEmojiWidth} emojiName={emojiStr} />
+        <Kb.Emoji size={isAndroid ? singleEmojiWidth - 5 : singleEmojiWidth} emojiName={emojiStr} />
       )}
     </Kb.ClickableBox>
   )
