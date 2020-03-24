@@ -12,6 +12,7 @@ import (
 type InviteCounts struct {
 	InviteCount      int     `codec:"inviteCount" json:"inviteCount"`
 	PercentageChange float64 `codec:"percentageChange" json:"percentageChange"`
+	ShowNumInvites   bool    `codec:"showNumInvites" json:"showNumInvites"`
 	ShowFire         bool    `codec:"showFire" json:"showFire"`
 }
 
@@ -19,6 +20,7 @@ func (o InviteCounts) DeepCopy() InviteCounts {
 	return InviteCounts{
 		InviteCount:      o.InviteCount,
 		PercentageChange: o.PercentageChange,
+		ShowNumInvites:   o.ShowNumInvites,
 		ShowFire:         o.ShowFire,
 	}
 }
@@ -58,15 +60,15 @@ func (o EmailInvites) DeepCopy() EmailInvites {
 }
 
 type InvitePeopleArg struct {
-	Emails EmailInvites     `codec:"emails" json:"emails"`
-	Phones []RawPhoneNumber `codec:"phones" json:"phones"`
+	Emails EmailInvites  `codec:"emails" json:"emails"`
+	Phones []PhoneNumber `codec:"phones" json:"phones"`
 }
 
 type GetInviteCountsArg struct {
 }
 
 type InviteFriendsInterface interface {
-	InvitePeople(context.Context, InvitePeopleArg) error
+	InvitePeople(context.Context, InvitePeopleArg) (int, error)
 	GetInviteCounts(context.Context) (InviteCounts, error)
 }
 
@@ -85,7 +87,7 @@ func InviteFriendsProtocol(i InviteFriendsInterface) rpc.Protocol {
 						err = rpc.NewTypeError((*[1]InvitePeopleArg)(nil), args)
 						return
 					}
-					err = i.InvitePeople(ctx, typedArgs[0])
+					ret, err = i.InvitePeople(ctx, typedArgs[0])
 					return
 				},
 			},
@@ -107,8 +109,8 @@ type InviteFriendsClient struct {
 	Cli rpc.GenericClient
 }
 
-func (c InviteFriendsClient) InvitePeople(ctx context.Context, __arg InvitePeopleArg) (err error) {
-	err = c.Cli.Call(ctx, "keybase.1.inviteFriends.invitePeople", []interface{}{__arg}, nil, 0*time.Millisecond)
+func (c InviteFriendsClient) InvitePeople(ctx context.Context, __arg InvitePeopleArg) (res int, err error) {
+	err = c.Cli.Call(ctx, "keybase.1.inviteFriends.invitePeople", []interface{}{__arg}, &res, 0*time.Millisecond)
 	return
 }
 
