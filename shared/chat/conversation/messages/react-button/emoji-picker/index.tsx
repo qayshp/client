@@ -1,11 +1,20 @@
 import * as React from 'react'
 import * as Data from './data'
-import {ClickableBox, Box2, Emoji, SectionList, Text} from '../../../../../common-adapters'
+import {
+  ClickableBox,
+  Box2,
+  Emoji,
+  SectionList,
+  Text,
+  CustomEmoji,
+  ProgressIndicator,
+} from '../../../../../common-adapters'
 import * as Styles from '../../../../../styles'
 import {isMobile, isAndroid} from '../../../../../constants/platform'
 import chunk from 'lodash/chunk'
 import {memoize} from '../../../../../util/memoize'
 import {Section as _Section} from '../../../../../common-adapters/section-list'
+import * as RPCChatGen from '../../../../../constants/types/rpc-chat-gen'
 
 // defer loading this until we need to, very expensive
 const _getData = memoize(() => {
@@ -77,8 +86,10 @@ type Section = _Section<Item, {title?: string}>
 type Props = {
   topReacjis: Array<string>
   filter?: string
-  onChoose: (emoji: Data.EmojiData) => void
+  customSections?: RPCChatGen.EmojiGroup[]
+  onChoose: (emoji: string) => void
   width: number
+  waitingForEmoji?: boolean
 }
 
 type State = {
@@ -102,14 +113,38 @@ class EmojiPicker extends React.Component<Props, State> {
     const {emojiSections} = getData(this.props.topReacjis.slice(0, emojisPerLine * 4))
     // width is different from cached. make new sections & cache for next time
     let sections: Array<Section> = []
-    sections = emojiSections.map(c => ({
-      data: chunk(c.data.emojis, emojisPerLine).map((c: any, idx: number) => ({
-        emojis: c,
-        key: (c && c.length && c[0] && c[0].short_name) || String(idx),
-      })),
-      key: c.key,
-      title: c.title,
-    }))
+    console.warn(this.props.customSections)
+    this.props.customSections?.map(c =>
+      sections.push({
+        data: [
+          {
+            emojis:
+              c.emojis?.map(e => ({
+                category: c.name,
+                name: null,
+                short_name: e.alias,
+                source: e.source.httpsrv,
+                unified: '',
+              })) ?? [],
+            key: '',
+          },
+        ],
+        key: c.name,
+        title: c.name,
+      })
+    )
+
+    emojiSections.map(c =>
+      sections.push({
+        data: chunk(c.data.emojis, emojisPerLine).map((c: any, idx: number) => ({
+          emojis: c,
+          key: (c && c.length && c[0] && c[0].short_name) || String(idx),
+        })),
+        key: c.key,
+        title: c.title,
+      })
+    )
+    console.warn(this.props.customSections)
     cacheSections(this.props.width, sections, this.props.topReacjis)
     this.setState({sections})
   }
@@ -132,6 +167,16 @@ class EmojiPicker extends React.Component<Props, State> {
     // to render. Render them directly rather than going through _chunkData
     // pipeline for fast list of results. Go through _chunkData only
     // when the width changes to do that processing as infrequently as possible
+    if (this.props.waitingForEmoji) {
+      return (
+        <Box2
+          direction="horizontal"
+          style={Styles.collapseStyles([styles.alignItemsCenter, styles.flexWrap])}
+        >
+          <ProgressIndicator />
+        </Box2>
+      )
+    }
     if (this.props.filter) {
       const results = getFilterResults(this.props.filter)
       // NOTE: maxEmojiSearchResults = 50 currently. this never fills the screen
@@ -174,7 +219,7 @@ const EmojiRow = (props: {
     emojis: Array<Data.EmojiData>
     key: string
   }
-  onChoose: (emojiData: Data.EmojiData) => void
+  onChoose: (emoji: string) => void
 }) => (
   <Box2 key={props.item.key} fullWidth={true} style={styles.alignItemsCenter} direction="horizontal">
     {props.item.emojis.map(e => (
@@ -183,17 +228,20 @@ const EmojiRow = (props: {
   </Box2>
 )
 
-const EmojiRender = ({
-  emoji,
-  onChoose,
-}: {
-  emoji: Data.EmojiData
-  onChoose: (emojiData: Data.EmojiData) => void
-}) => (
-  <ClickableBox onClick={() => onChoose(emoji)} style={styles.emoji} key={emoji.short_name}>
-    <Emoji size={isAndroid ? singleEmojiWidth - 5 : singleEmojiWidth} emojiName={`:${emoji.short_name}:`} />
-  </ClickableBox>
-)
+const EmojiRender = ({emoji, onChoose}: {emoji: Data.EmojiData; onChoose: (shortName: string) => void}) => {
+  return (
+    <ClickableBox onClick={() => onChoose(emoji.short_name)} style={styles.emoji} key={emoji.short_name}>
+      {emoji.source ? (
+        <CustomEmoji size="Medium" src={emoji.source} alias={emoji.short_name} />
+      ) : (
+        <Emoji
+          size={isAndroid ? singleEmojiWidth - 5 : singleEmojiWidth}
+          emojiName={`:${emoji.short_name}:`}
+        />
+      )}
+    </ClickableBox>
+  )
+}
 
 const HeaderRow = ({section}: {section: Section}) => (
   <Box2 direction="horizontal" fullWidth={true} style={styles.sectionHeader}>

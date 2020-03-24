@@ -6,6 +6,7 @@ import * as Constants from '../../../../../constants/chat2'
 import * as Types from '../../../../../constants/types/chat2'
 import * as Chat2Gen from '../../../../../actions/chat2-gen'
 import * as RouteTreeGen from '../../../../../actions/route-tree-gen'
+import * as RPCChatGen from '../../../../../constants/types/rpc-chat-gen'
 import * as Styles from '../../../../../styles'
 import EmojiPicker from '.'
 
@@ -52,8 +53,32 @@ const useReacji = ({onPick, onDidPick}: Props) => {
   }
 }
 
+const useCustomReacji = () => {
+  const getUserEmoji = Container.useRPC(RPCChatGen.localUserEmojisRpcPromise)
+  const [customEmojiGroups, setCustomEmojiGroups] = React.useState<RPCChatGen.EmojiGroup[]>([])
+  const [waiting, setWaiting] = React.useState(true)
+
+  React.useEffect(() => {
+    setWaiting(true)
+    getUserEmoji(
+      [undefined],
+      result => {
+        setCustomEmojiGroups(result.emojis.emojis ?? [])
+        setWaiting(false)
+      },
+      _ => {
+        setCustomEmojiGroups([])
+        setWaiting(false)
+      }
+    )
+  }, [getUserEmoji])
+
+  return {waiting, customEmojiGroups}
+}
+
 const WrapperMobile = (props: Props) => {
   const {filter, onAddReaction, setFilter, topReacjis} = useReacji(props)
+  const {waiting, customEmojiGroups} = useCustomReacji()
   const [width, setWidth] = React.useState(0)
   const onLayout = (evt: LayoutEvent) => evt.nativeEvent && setWidth(evt.nativeEvent.layout.width)
   const dispatch = Container.useDispatch()
@@ -82,7 +107,9 @@ const WrapperMobile = (props: Props) => {
       <EmojiPicker
         topReacjis={topReacjis}
         filter={filter}
-        onChoose={emoji => onAddReaction(`:${emoji.short_name}:`)}
+        onChoose={emoji => onAddReaction(`:${emoji}:`)}
+        customSections={customEmojiGroups}
+        waitingForEmoji={waiting}
         width={width}
       />
     </Kb.Box2>
@@ -91,6 +118,8 @@ const WrapperMobile = (props: Props) => {
 
 export const EmojiPickerDesktop = (props: Props) => {
   const {filter, onAddReaction, setFilter, topReacjis} = useReacji(props)
+  const {waiting, customEmojiGroups} = useCustomReacji()
+
   return (
     <Kb.Box
       direction="vertical"
@@ -107,10 +136,13 @@ export const EmojiPickerDesktop = (props: Props) => {
         style={styles.searchFilter}
       />
       <Kb.Box style={styles.emojiContainer}>
+        {waiting && <Kb.ProgressIndicator />}
         <EmojiPicker
           topReacjis={topReacjis}
           filter={filter}
-          onChoose={emoji => onAddReaction(`:${emoji.short_name}:`)}
+          onChoose={shortName => onAddReaction(`:${shortName}:`)}
+          customSections={customEmojiGroups}
+          waitingForEmoji={waiting}
           width={320}
         />
       </Kb.Box>

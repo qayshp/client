@@ -8,6 +8,7 @@ export type EmojiData = {
   name: string | null
   short_name: string
   unified: string
+  source?: string
 }
 
 const categorized = groupBy(emojidata, 'category')
